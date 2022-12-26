@@ -2,6 +2,7 @@
 using Azure.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TodoServices.Data;
 using TodoServices.DTO;
 using TodoServices.Model;
 using TodoServices.Profiles.Data;
@@ -13,10 +14,10 @@ namespace TodoServices.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private ApplicationDbContext _context;
+        private AppDbContext _context;
         private IMapper _mapper;
 
-        public UserController(ApplicationDbContext context,IMapper mapper)
+        public UserController(AppDbContext context,IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -34,7 +35,7 @@ namespace TodoServices.Controllers
                 return BadRequest("Username or Password Incorect");
             }
             var dbuse =  _mapper.Map<User>(dbUser);
-            return Ok(dbuse);
+            return Ok("Login is Successful");
              
         }
 

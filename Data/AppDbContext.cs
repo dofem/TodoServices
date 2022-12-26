@@ -4,9 +4,9 @@ using TodoServices.Model;
 
 namespace TodoServices.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> Options) : base(Options)
+        public AppDbContext(DbContextOptions<AppDbContext> Options) : base(Options)
         { 
 
         }

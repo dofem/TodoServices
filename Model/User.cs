@@ -6,7 +6,7 @@
         public string UserName { get; set; }
         public string Password { get; set; }
         public int Active { get; set; } = 1;
-        public List<Task> Tasks { get; set; }
+        public List<Tasks> Tasks { get; set; }
 
     }
 }
