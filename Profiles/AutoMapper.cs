@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using TodoServices.DTO;
+using TodoServices.Model;
 
 namespace TodoServices.Profiles
 {
@@ -6,8 +8,8 @@ namespace TodoServices.Profiles
     {
         public AutoMapper()
         {
-            CreateMap<User, Login>();
-            CreateMap<UserSecretsConfigurationExtensions,>
+            CreateMap<User, Login>().ReverseMap();
+            CreateMap<User, Register>().ReverseMap();
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Azure.Identity;
+﻿using AutoMapper;
+using Azure.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using TodoServices.Data;
+using TodoServices.DTO;
 using TodoServices.Model;
+using TodoServices.Profiles.Data;
 using TodoServices.Tools;
 
 namespace TodoServices.Controllers
@@ -13,42 +14,45 @@ namespace TodoServices.Controllers
     public class UserController : ControllerBase
     {
         private ApplicationDbContext _context;
+        private IMapper _mapper;
 
-        public UserController(ApplicationDbContext context)
+        public UserController(ApplicationDbContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> UserLogin([FromBody] User user)
+        public async Task<IActionResult> UserLogin([FromBody] Login login)
         {
-            string password = Password.hashPassword(user.Password);
-           var dbUser= _context.Users.Where(u=>u.UserName == user.UserName && u.Password == password).FirstOrDefault();
+            string password = Password.hashPassword(login.Password);
+           var dbUser= _context.Users.Where(u=>u.UserName == login.UserName && u.Password == password).FirstOrDefault();
 
             if(dbUser==null)
             {
                 return BadRequest("Username or Password Incorect");
             }
-            return Ok(dbUser);
+            var dbuse =  _mapper.Map<User>(dbUser);
+            return Ok(dbuse);
              
         }
 
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> UserRegistration([FromBody]User user)
+        public async Task<IActionResult> UserRegistration([FromBody]Register register)
         {
-            var dbUser = _context.Users.Where(u => u.UserName == user.UserName).FirstOrDefault();
+            var dbUser = _context.Users.Where(u => u.UserName == register.UserName).FirstOrDefault();
             if(dbUser != null)
             {
                 return BadRequest("Username already exist");
             }
             
-            user.Password = Password.hashPassword(user.Password);
-            user.Active = 1;
+            register.Password = Password.hashPassword(register.Password);
+            var registered = _mapper.Map<User>(register);
 
-            _context.Users.Add(user);
-            _context.SaveChangesAsync();
+            _context.Users.Add(registered);
+            await _context.SaveChangesAsync();
 
             return Ok("User Successfully Registered");
         }
