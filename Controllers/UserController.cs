@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using TodoServices.Data;
 using TodoServices.DTO;
 using TodoServices.Model;
-using TodoServices.Profiles.Data;
 using TodoServices.Tools;
 
 namespace TodoServices.Controllers
@@ -27,15 +26,22 @@ namespace TodoServices.Controllers
         [Route("login")]
         public async Task<IActionResult> UserLogin([FromBody] Login login)
         {
-            string password = Password.hashPassword(login.Password);
-           var dbUser= _context.Users.Where(u=>u.UserName == login.UserName && u.Password == password).FirstOrDefault();
-
-            if(dbUser==null)
+            try
             {
-                return BadRequest("Username or Password Incorect");
+                string password = Password.hashPassword(login.Password);
+                var dbUser = _context.Users.Where(u => u.UserName == login.UserName && u.Password == password).FirstOrDefault();
+
+                if (dbUser == null)
+                {
+                    return BadRequest("Username or Password Incorect");
+                }
+                var dbuse = _mapper.Map<User>(dbUser);
+                return Ok("Login is Successful");
             }
-            var dbuse =  _mapper.Map<User>(dbUser);
-            return Ok("Login is Successful");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
              
         }
 
@@ -43,19 +49,26 @@ namespace TodoServices.Controllers
         [Route("Register")]
         public async Task<IActionResult> UserRegistration([FromBody]Register register)
         {
-            var dbUser = _context.Users.Where(u => u.UserName == register.UserName).FirstOrDefault();
-            if(dbUser != null)
+            try
             {
-                return BadRequest("Username already exist");
+                var dbUser = _context.Users.Where(u => u.UserName == register.UserName).FirstOrDefault();
+                if (dbUser != null)
+                {
+                    return BadRequest("Username already exist");
+                }
+
+                register.Password = Password.hashPassword(register.Password);
+                var registered = _mapper.Map<User>(register);
+
+                _context.Users.Add(registered);
+                await _context.SaveChangesAsync();
+
+                return Ok("User Successfully Registered");
             }
-            
-            register.Password = Password.hashPassword(register.Password);
-            var registered = _mapper.Map<User>(register);
-
-            _context.Users.Add(registered);
-            await _context.SaveChangesAsync();
-
-            return Ok("User Successfully Registered");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

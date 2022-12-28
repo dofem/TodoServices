@@ -1,12 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace TodoServices.Model
+namespace TodoServices.DTO
 {
-    public class Tasks
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UpdateTask : ControllerBase
     {
-        [Key]
-        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
@@ -14,12 +16,6 @@ namespace TodoServices.Model
         [ForeignKey("UserId")]
         [Required]
         public int UserId { get; set; }
-        public DateTime DateCreated { get; set; } = DateTime.Now;
-        public bool DateCompleted { get; set; } = false;
         public DateTime UpdatedDate { get; set; } = DateTime.Now;
-        public User User { get; set; }
-       
-      
-        
     }
 }

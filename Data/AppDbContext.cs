@@ -12,7 +12,7 @@ namespace TodoServices.Data
         }
 
         public  DbSet<User>Users { get; set; }
-        public DbSet<Tasks>Tasks { get; set; }
+        public DbSet<Tasks>Taskss { get; set; }
 
 
        

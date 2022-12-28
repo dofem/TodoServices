@@ -10,6 +10,7 @@ namespace TodoServices.Profiles
         {
             CreateMap<User, Login>().ReverseMap();
             CreateMap<User, Register>().ReverseMap();
+            CreateMap<Tasks,CreateTasks>().ReverseMap();
         }
     }
 }
